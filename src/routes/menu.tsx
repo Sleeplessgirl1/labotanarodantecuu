@@ -33,13 +33,31 @@ const DULCES: Record<string, string[]> = {
   "Otros": ["Picafresa", "Tamborcito", "Banderilla Enchilada", "Banderilla Azúcar"],
 };
 
+const TOPPING_TABS: Tab[] = ["Snacks", "Frutas", "Dulces"];
+const TOPPING_LIMIT = 10;
+
 function MenuPage() {
   const [tab, setTab] = useState<Tab>("Snacks");
+  const [limitFlash, setLimitFlash] = useState(false);
   const { add, items } = useCart();
   const inCart = (id: string) => items.some((i) => i.id === id);
 
+  const toppingCount = items.filter((i) =>
+    (TOPPING_TABS as readonly string[]).some((t) => i.id.startsWith(`${t === "Snacks" ? "" : ""}`)) ||
+    ["Papas","Cacahuates","Botanas","Frutas Frescas","Verduras","Gomitas y dulces blandos","Tamarindo","Paletas","Otros"].some((c) => i.id.startsWith(`${c}:`))
+  ).reduce((s, i) => s + i.quantity, 0);
+
+  const isTopping = (category: string) =>
+    ["Papas","Cacahuates","Botanas","Frutas Frescas","Verduras","Gomitas y dulces blandos","Tamarindo","Paletas","Otros"].includes(category);
+
   const onAdd = (name: string, category: string) => {
-    add({ id: `${category}:${name}`, name, category });
+    const id = `${category}:${name}`;
+    if (isTopping(category) && !inCart(id) && toppingCount >= TOPPING_LIMIT) {
+      setLimitFlash(true);
+      setTimeout(() => setLimitFlash(false), 1800);
+      return;
+    }
+    add({ id, name, category });
   };
 
   return (
