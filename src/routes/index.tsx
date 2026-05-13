@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, UtensilsCrossed, Package, Image as ImageIcon, FileText, Phone, MessageCircle, Flame } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -14,11 +15,9 @@ function Home() {
       {/* Brand row */}
       <div className="flex items-center justify-between animate-fade-up">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-2xl bg-foreground text-white flex items-center justify-center font-black text-lg tracking-tighter">
-            LB
-          </div>
+          <img src={logo} alt="La Botana Rodante" className="h-12 w-12 rounded-full object-cover" />
           <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-bold">Snack Bar Móvil</p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-bold">Drink & Snack Bar</p>
             <h1 className="text-[17px] font-extrabold leading-tight tracking-tight">La Botana Rodante</h1>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { ArrowUpRight } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/contacto")({
   component: ContactoPage,
@@ -11,6 +12,10 @@ function ContactoPage() {
   return (
     <div>
       <Header kicker="Hablemos" title="Contacto" />
+
+      <div className="px-6 -mt-2 mb-6 flex justify-center animate-fade-up">
+        <img src={logo} alt="La Botana Rodante" className="h-40 w-40 rounded-full" />
+      </div>
 
       <div className="px-6 pb-6 space-y-3">
         <a
