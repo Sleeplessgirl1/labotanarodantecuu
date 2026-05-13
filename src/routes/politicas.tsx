@@ -59,10 +59,11 @@ const SECTIONS = [
 
 function PoliticasPage() {
   const [open, setOpen] = useState<number | null>(0);
+  const ICONS = ["💳", "↩️", "🥤", "🍷", "📦"];
   return (
     <div>
-      <Header title="Políticas" subtitle="Lo que necesitas saber antes de contratar" />
-      <div className="px-5 space-y-2 pb-4">
+      <Header title="Políticas" emoji="📋" subtitle="Lo que necesitas saber antes de contratar" />
+      <div className="px-5 space-y-3 pb-4">
         {SECTIONS.map((s, i) => {
           const isOpen = open === i;
           return (
