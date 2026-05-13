@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { toast } from "sonner";
 import { Header } from "@/components/Header";
 
 export const Route = createFileRoute("/menu")({
@@ -10,15 +9,8 @@ export const Route = createFileRoute("/menu")({
   head: () => ({ meta: [{ title: "Menú — La Botana Rodante" }] }),
 });
 
-const TABS = [
-  { id: "Snacks", emoji: "🌮" },
-  { id: "Frutas", emoji: "🍓" },
-  { id: "Dulces", emoji: "🍬" },
-  { id: "Cantaritos", emoji: "🍹" },
-  { id: "Clamatos", emoji: "🍅" },
-  { id: "Margaritas", emoji: "🍸" },
-] as const;
-type Tab = typeof TABS[number]["id"];
+const TABS = ["Snacks", "Frutas", "Dulces", "Cantaritos", "Clamatos", "Margaritas"] as const;
+type Tab = typeof TABS[number];
 
 const SNACKS: Record<string, string[]> = {
   "Papas": ["Salada", "Adobada", "Queso"],
@@ -38,56 +30,53 @@ const DULCES: Record<string, string[]> = {
 
 function MenuPage() {
   const [tab, setTab] = useState<Tab>("Snacks");
-  const { add } = useCart();
+  const { add, items } = useCart();
+  const inCart = (id: string) => items.some((i) => i.id === id);
 
   const onAdd = (name: string, category: string) => {
     add({ id: `${category}:${name}`, name, category });
-    toast.success(`✓ ${name} agregado`, { duration: 1300 });
   };
 
   return (
     <div>
-      <Header title="Menú" emoji="🌮" subtitle="Toca cualquier producto para agregarlo al carrito" />
+      <Header kicker="Catálogo" title="Menú" />
 
       {/* Tabs */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b border-border">
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
         <div className="overflow-x-auto no-scrollbar">
-          <div className="flex gap-2 px-4 py-3 min-w-max">
+          <div className="flex gap-6 px-6 py-3 min-w-max">
             {TABS.map((t) => {
-              const active = t.id === tab;
+              const active = t === tab;
               return (
                 <button
-                  key={t.id}
-                  onClick={() => setTab(t.id)}
-                  className={`px-4 py-2.5 rounded-full text-sm font-bold whitespace-nowrap min-h-[44px] flex items-center gap-1.5 transition ${
-                    active
-                      ? "bg-primary text-primary-foreground shadow-soft"
-                      : "bg-accent text-foreground/70"
+                  key={t}
+                  onClick={() => setTab(t)}
+                  data-active={active}
+                  className={`underline-grow text-sm font-bold whitespace-nowrap min-h-[36px] transition-colors ${
+                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <span className="text-base">{t.emoji}</span>
-                  {t.id}
+                  {t}
                 </button>
               );
             })}
           </div>
         </div>
+        <div className="h-px bg-border" />
       </div>
 
-      <div className="px-5 py-5">
-        {tab === "Snacks" && <CategoryGroups groups={SNACKS} onAdd={onAdd} />}
+      <div key={tab} className="px-6 py-6 animate-fade-up">
+        {tab === "Snacks" && <CategoryGroups groups={SNACKS} onAdd={onAdd} inCart={inCart} />}
         {tab === "Frutas" && (
           <>
-            <div className="mb-4 rounded-2xl bg-accent border border-primary/15 p-3 text-xs font-medium">
-              🌤️ Frutas frescas sujetas a temporada
-            </div>
-            <CategoryGroups groups={FRUTAS} onAdd={onAdd} />
+            <p className="text-xs text-muted-foreground mb-4 italic">Frutas frescas sujetas a temporada</p>
+            <CategoryGroups groups={FRUTAS} onAdd={onAdd} inCart={inCart} />
           </>
         )}
-        {tab === "Dulces" && <CategoryGroups groups={DULCES} onAdd={onAdd} />}
+        {tab === "Dulces" && <CategoryGroups groups={DULCES} onAdd={onAdd} inCart={inCart} />}
         {tab === "Cantaritos" && (
           <DrinkBlock
-            tab={tab} emoji="🍹"
+            tab={tab}
             description="Servido en cantarito de barro 355ml"
             ingredients="Tequila 1 oz · Squirt top · Jugo de limón 3/4 oz · Sal · Agua mineral · Escarcha de chamoy y miguelito en borde"
             options={[{ name: "Paquete 40 piezas — 1 hr de servicio", price: "$3,500" }]}
@@ -95,7 +84,7 @@ function MenuPage() {
         )}
         {tab === "Clamatos" && (
           <DrinkBlock
-            tab={tab} emoji="🍅"
+            tab={tab}
             ingredients="Clamato 150ml · Cerveza Modelo o Carta Blanca · Jugo de limón 1 oz · Apio · Cacahuates · Salsas · Limón · Chile (Carne seca: extra a cotizar)"
             options={[
               { name: "Medio litro", price: "$70" },
@@ -106,7 +95,7 @@ function MenuPage() {
         )}
         {tab === "Margaritas" && (
           <DrinkBlock
-            tab={tab} emoji="🍸"
+            tab={tab}
             description="Sabores: Tamarindo o Limón"
             ingredients="Tequila 1 oz · Jugo de limón 1 oz · Jarabe natural o tamarindo · Mineral o Squirt · Sal · Escarcha de chamoy y miguelito en borde · Vaso 9oz"
             options={[{ name: "Paquete 40 piezas", price: "$3,500" }]}
@@ -114,42 +103,50 @@ function MenuPage() {
         )}
 
         {(tab === "Cantaritos" || tab === "Clamatos" || tab === "Margaritas") && (
-          <div className="mt-6 rounded-3xl bg-foreground text-white p-5">
-            <p className="text-sm font-bold flex items-center gap-2">⚠️ Solo mayores de 18 años</p>
-            <p className="text-xs text-white/70 mt-1.5">Versión sin alcohol disponible bajo solicitud.</p>
-          </div>
+          <p className="mt-8 text-xs text-muted-foreground text-center border-t border-border pt-5">
+            Solo mayores de 18 años · Versión sin alcohol disponible bajo solicitud
+          </p>
         )}
       </div>
     </div>
   );
 }
 
-function CategoryGroups({ groups, onAdd }: { groups: Record<string, string[]>; onAdd: (n: string, c: string) => void }) {
+function CategoryGroups({
+  groups, onAdd, inCart,
+}: {
+  groups: Record<string, string[]>;
+  onAdd: (n: string, c: string) => void;
+  inCart: (id: string) => boolean;
+}) {
+  const entries = Object.entries(groups);
   return (
-    <div className="space-y-5">
-      {Object.entries(groups).map(([cat, items]) => (
-        <section key={cat} className="bg-white rounded-3xl p-5 shadow-soft border border-border">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-            <h2 className="text-lg font-extrabold">{cat}</h2>
-            <span className="ml-auto text-xs font-bold text-muted-foreground bg-accent px-2 py-0.5 rounded-full">
-              {items.length}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {items.map((item) => (
-              <button
-                key={item}
-                onClick={() => onAdd(item, cat)}
-                className="group inline-flex items-center gap-2 pl-4 pr-1.5 py-2 rounded-full border-2 border-primary/25 hover:border-primary hover:bg-primary/5 active:scale-95 transition min-h-[44px]"
-              >
-                <span className="text-[15px] font-medium text-foreground">{item}</span>
-                <span className="h-7 w-7 rounded-full bg-primary text-primary-foreground inline-flex items-center justify-center group-hover:rotate-90 transition">
-                  <Plus className="h-4 w-4" strokeWidth={3} />
-                </span>
-              </button>
-            ))}
-          </div>
+    <div className="space-y-8">
+      {entries.map(([cat, items], idx) => (
+        <section key={cat} className="animate-fade-up" style={{ animationDelay: `${idx * 60}ms` }}>
+          <h2 className="text-xs uppercase tracking-[0.18em] font-bold text-muted-foreground mb-3">{cat}</h2>
+          <ul className="divide-y divide-border">
+            {items.map((item) => {
+              const id = `${cat}:${item}`;
+              const added = inCart(id);
+              return (
+                <li key={item} className="flex items-center justify-between py-3.5">
+                  <span className="text-[15px] font-medium">{item}</span>
+                  <button
+                    onClick={() => onAdd(item, cat)}
+                    aria-label={`Agregar ${item}`}
+                    className={`h-9 w-9 rounded-full flex items-center justify-center transition active:scale-90 ${
+                      added
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-accent text-foreground hover:bg-primary hover:text-primary-foreground"
+                    }`}
+                  >
+                    {added ? <Check className="h-4 w-4" strokeWidth={3} /> : <Plus className="h-4 w-4" strokeWidth={2.5} />}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </section>
       ))}
     </div>
@@ -157,39 +154,37 @@ function CategoryGroups({ groups, onAdd }: { groups: Record<string, string[]>; o
 }
 
 function DrinkBlock({
-  tab, emoji, description, ingredients, options,
+  tab, description, ingredients, options,
 }: {
   tab: Tab;
-  emoji: string;
   description?: string;
   ingredients: string;
   options: { name: string; price: string }[];
 }) {
   const { add } = useCart();
-  const onAdd = (name: string) => {
-    add({ id: `${tab}:${name}`, name, category: tab });
-    toast.success(`✓ ${name} agregado`, { duration: 1300 });
-  };
+  const onAdd = (name: string) => add({ id: `${tab}:${name}`, name, category: tab });
   return (
-    <div className="space-y-4">
-      <div className="bg-primary text-primary-foreground rounded-3xl p-5 relative overflow-hidden">
-        <div className="absolute -right-4 -bottom-4 text-7xl opacity-30">{emoji}</div>
-        <p className="text-xs font-bold uppercase tracking-wider opacity-80">Ingredientes</p>
-        {description && <p className="mt-2 text-base font-bold">{description}</p>}
-        <p className="mt-2 text-sm font-medium leading-relaxed relative">{ingredients}</p>
+    <div className="space-y-5">
+      {description && <p className="text-base font-medium">{description}</p>}
+
+      <div>
+        <p className="text-xs uppercase tracking-[0.18em] font-bold text-muted-foreground mb-2">Ingredientes</p>
+        <p className="text-[15px] leading-relaxed text-foreground/80">{ingredients}</p>
       </div>
-      <div className="space-y-3">
-        {options.map((o) => (
-          <div key={o.name} className="rounded-3xl border-2 border-border bg-white p-5 shadow-soft">
-            <div className="flex items-baseline justify-between gap-3">
-              <p className="text-base font-bold flex-1">{o.name}</p>
-              <p className="text-2xl font-black text-primary">{o.price}</p>
+
+      <div className="border-t border-border pt-5 space-y-3">
+        <p className="text-xs uppercase tracking-[0.18em] font-bold text-muted-foreground">Opciones</p>
+        {options.map((o, idx) => (
+          <div key={o.name} className="flex items-center justify-between gap-3 py-3 border-b border-border last:border-0 animate-fade-up" style={{ animationDelay: `${idx * 80}ms` }}>
+            <div className="flex-1 min-w-0">
+              <p className="text-[15px] font-medium">{o.name}</p>
+              <p className="text-lg font-extrabold text-primary mt-0.5">{o.price}</p>
             </div>
             <button
               onClick={() => onAdd(`${o.name} (${tab})`)}
-              className="mt-4 w-full bg-primary text-primary-foreground font-bold py-3.5 rounded-full text-base active:scale-[0.98] transition flex items-center justify-center gap-2"
+              className="bg-foreground text-white font-bold px-5 py-3 rounded-full text-sm active:scale-95 transition"
             >
-              <Plus className="h-4 w-4" strokeWidth={3} /> Agregar al carrito
+              Agregar
             </button>
           </div>
         ))}
