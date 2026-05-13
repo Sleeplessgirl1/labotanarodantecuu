@@ -36,8 +36,8 @@ function Home() {
       {/* Hero */}
       <div className="mt-7 animate-fade-up delay-1">
         <p className="text-[11px] uppercase tracking-[0.22em] font-bold text-primary">Chihuahua · Eventos</p>
-        <h2 className="mt-2 text-[2rem] leading-[1] font-black tracking-tight">
-          Botanas, bebidas y mini burgers <span className="text-primary">a tu fiesta.</span>
+        <h2 className="font-display mt-3 text-[3.4rem]">
+          Botanas, bebidas <br/>y mini burgers <span className="text-primary">a tu fiesta.</span>
         </h2>
         <p className="mt-3 text-[15px] text-foreground/70 leading-snug">
           Arma tu pedido en segundos. Te cotizamos por WhatsApp.
