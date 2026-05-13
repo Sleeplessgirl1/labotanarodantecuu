@@ -9,8 +9,13 @@ export const Route = createFileRoute("/menu")({
   head: () => ({ meta: [{ title: "Menú — La Botana Rodante" }] }),
 });
 
-const TABS = ["Snacks", "Frutas", "Dulces", "Cantaritos", "Clamatos", "Margaritas"] as const;
+const TABS = ["Snacks", "Frutas", "Dulces", "Mini Burgers", "Cantaritos", "Clamatos", "Margaritas"] as const;
 type Tab = typeof TABS[number];
+
+const MINI_BURGERS = [
+  { name: "Paquete A — 30 personas", desc: "75 mini hamburguesas + papas francesas", price: "$2,850" },
+  { name: "Paquete B — 50 personas", desc: "125 mini hamburguesas + papas francesas", price: "$5,700" },
+];
 
 const SNACKS: Record<string, string[]> = {
   "Papas": ["Salada", "Adobada", "Queso"],
@@ -74,6 +79,14 @@ function MenuPage() {
           </>
         )}
         {tab === "Dulces" && <CategoryGroups groups={DULCES} onAdd={onAdd} inCart={inCart} />}
+        {tab === "Mini Burgers" && (
+          <DrinkBlock
+            tab={tab}
+            description="Mini hamburguesas armadas al momento + papas francesas crujientes"
+            ingredients="Pan brioche · carne sellada · queso americano · cebolla caramelizada · pepinillo · salsa de la casa"
+            options={MINI_BURGERS}
+          />
+        )}
         {tab === "Cantaritos" && (
           <DrinkBlock
             tab={tab}
@@ -107,6 +120,16 @@ function MenuPage() {
             Solo mayores de 18 años · Versión sin alcohol disponible bajo solicitud
           </p>
         )}
+
+        {/* Persuasive CTA at bottom of every tab */}
+        <div className="mt-10 rounded-[22px] bg-primary/8 border border-primary/20 p-5 text-center">
+          <p className="text-[13px] text-foreground/70 leading-snug">
+            ¿Listo para tu evento?
+          </p>
+          <p className="font-extrabold text-[17px] mt-1 leading-tight">
+            Arma tu lista y te cotizamos por WhatsApp en minutos
+          </p>
+        </div>
       </div>
     </div>
   );
