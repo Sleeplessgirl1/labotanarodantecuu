@@ -67,16 +67,19 @@ function PoliticasPage() {
         {SECTIONS.map((s, i) => {
           const isOpen = open === i;
           return (
-            <div key={s.title} className="bg-white border border-border rounded-2xl shadow-soft overflow-hidden">
+            <div key={s.title} className={`bg-white border-2 rounded-3xl shadow-soft overflow-hidden transition ${isOpen ? "border-primary" : "border-border"}`}>
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="w-full flex items-center justify-between px-4 py-4 min-h-[56px]"
+                className="w-full flex items-center gap-3 px-5 py-4 min-h-[64px] text-left"
               >
-                <span className={`text-[15px] font-bold ${isOpen ? "text-primary" : "text-foreground"}`}>{s.title}</span>
+                <span className={`h-10 w-10 rounded-2xl flex items-center justify-center text-xl shrink-0 ${isOpen ? "bg-primary text-primary-foreground" : "bg-accent"}`}>
+                  {ICONS[i]}
+                </span>
+                <span className={`flex-1 text-base font-extrabold ${isOpen ? "text-primary" : "text-foreground"}`}>{s.title}</span>
                 <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180 text-primary" : "text-muted-foreground"}`} />
               </button>
               {isOpen && (
-                <div className="px-4 pb-4 text-sm font-light leading-relaxed text-foreground/80 animate-pop">
+                <div className="px-5 pb-5 pt-1 text-[15px] font-normal leading-relaxed text-foreground/80 animate-pop">
                   {s.body}
                 </div>
               )}
