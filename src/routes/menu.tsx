@@ -86,6 +86,26 @@ function MenuPage() {
         <div className="h-px bg-border" />
       </div>
 
+      {isToppingTab && (
+        <div className="px-6 pt-4">
+          <div className={`flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 transition-colors ${
+            limitFlash ? "border-primary bg-primary/10" : toppingCount >= TOPPING_LIMIT ? "border-primary/40 bg-primary/5" : "border-border bg-accent/40"
+          }`}>
+            <p className="text-[13px] leading-snug font-medium text-foreground/80">
+              Elige hasta <b className="text-foreground">10 toppings</b> entre Snacks, Frutas y Dulces
+            </p>
+            <span className={`shrink-0 text-sm font-extrabold tabular-nums ${toppingCount >= TOPPING_LIMIT ? "text-primary" : "text-foreground"}`}>
+              {toppingCount}/{TOPPING_LIMIT}
+            </span>
+          </div>
+          {limitFlash && (
+            <p className="mt-2 text-[12px] font-semibold text-primary animate-fade-up">
+              Llegaste al máximo de 10 toppings. Quita uno para agregar otro.
+            </p>
+          )}
+        </div>
+      )}
+
       <div key={tab} className="px-6 py-6 animate-fade-up">
         {tab === "Snacks" && <CategoryGroups groups={SNACKS} onAdd={onAdd} inCart={inCart} />}
         {tab === "Frutas" && (
