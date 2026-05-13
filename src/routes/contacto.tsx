@@ -10,7 +10,7 @@ export const Route = createFileRoute("/contacto")({
 function ContactoPage() {
   return (
     <div>
-      <Header title="Contacto" subtitle="Estamos listos para tu próximo evento" />
+      <Header title="Contacto" emoji="📞" subtitle="Estamos listos para tu próximo evento" />
       <div className="px-5 space-y-3 pb-4">
         <a
           href="https://wa.me/526145154240"
