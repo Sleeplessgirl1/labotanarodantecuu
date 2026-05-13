@@ -18,17 +18,17 @@ function GaleriaPage() {
 
   return (
     <div>
-      <Header title="Nuestros Eventos" subtitle="Momentos que hemos endulzado" />
+      <Header title="Nuestros Eventos" emoji="📸" subtitle="Momentos que hemos endulzado" />
       <div className="px-5 pb-4">
         <div className="grid grid-cols-2 gap-3">
           {SLOTS.map((_, i) => (
             <button
               key={i}
               onClick={() => setOpen(i)}
-              className="aspect-square rounded-2xl bg-accent border border-border flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary transition"
+              className="aspect-square rounded-3xl bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-dashed border-primary/30 flex flex-col items-center justify-center gap-2 text-primary hover:border-primary transition active:scale-95"
             >
-              <Camera className="h-7 w-7" strokeWidth={1.5} />
-              <span className="text-[11px] font-medium">Foto del evento</span>
+              <Camera className="h-8 w-8" strokeWidth={1.75} />
+              <span className="text-xs font-bold">Foto {i + 1}</span>
             </button>
           ))}
         </div>
