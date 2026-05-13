@@ -6,6 +6,7 @@
 
 @theme inline {
   --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Anton", "Plus Jakarta Sans", system-ui, sans-serif;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -67,6 +68,13 @@
   }
   h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.025em; }
   label { font-weight: 600; }
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    line-height: 0.92;
+  }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
 }

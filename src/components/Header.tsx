@@ -6,7 +6,7 @@ export function Header({ title, kicker }: { title: string; kicker?: string }) {
           {kicker}
         </p>
       )}
-      <h1 className="text-[2.5rem] leading-[1] font-extrabold tracking-tight animate-fade-up delay-1">
+      <h1 className="font-display text-[3.25rem] animate-fade-up delay-1">
         {title}
       </h1>
     </header>
