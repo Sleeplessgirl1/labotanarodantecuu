@@ -33,13 +33,29 @@ const DULCES: Record<string, string[]> = {
   "Otros": ["Picafresa", "Tamborcito", "Banderilla Enchilada", "Banderilla Azúcar"],
 };
 
+const TOPPING_CATS = ["Papas","Cacahuates","Botanas","Frutas Frescas","Verduras","Gomitas y dulces blandos","Tamarindo","Paletas","Otros"];
+const TOPPING_LIMIT = 10;
+
 function MenuPage() {
   const [tab, setTab] = useState<Tab>("Snacks");
+  const [limitFlash, setLimitFlash] = useState(false);
   const { add, items } = useCart();
   const inCart = (id: string) => items.some((i) => i.id === id);
 
+  const toppingCount = items
+    .filter((i) => TOPPING_CATS.includes(i.category))
+    .reduce((s, i) => s + i.quantity, 0);
+
+  const isToppingTab = (["Snacks","Frutas","Dulces"] as Tab[]).includes(tab);
+
   const onAdd = (name: string, category: string) => {
-    add({ id: `${category}:${name}`, name, category });
+    const id = `${category}:${name}`;
+    if (TOPPING_CATS.includes(category) && !inCart(id) && toppingCount >= TOPPING_LIMIT) {
+      setLimitFlash(true);
+      setTimeout(() => setLimitFlash(false), 1800);
+      return;
+    }
+    add({ id, name, category });
   };
 
   return (
@@ -69,6 +85,26 @@ function MenuPage() {
         </div>
         <div className="h-px bg-border" />
       </div>
+
+      {isToppingTab && (
+        <div className="px-6 pt-4">
+          <div className={`flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 transition-colors ${
+            limitFlash ? "border-primary bg-primary/10" : toppingCount >= TOPPING_LIMIT ? "border-primary/40 bg-primary/5" : "border-border bg-accent/40"
+          }`}>
+            <p className="text-[13px] leading-snug font-medium text-foreground/80">
+              Elige hasta <b className="text-foreground">10 toppings</b> entre Snacks, Frutas y Dulces
+            </p>
+            <span className={`shrink-0 text-sm font-extrabold tabular-nums ${toppingCount >= TOPPING_LIMIT ? "text-primary" : "text-foreground"}`}>
+              {toppingCount}/{TOPPING_LIMIT}
+            </span>
+          </div>
+          {limitFlash && (
+            <p className="mt-2 text-[12px] font-semibold text-primary animate-fade-up">
+              Llegaste al máximo de 10 toppings. Quita uno para agregar otro.
+            </p>
+          )}
+        </div>
+      )}
 
       <div key={tab} className="px-6 py-6 animate-fade-up">
         {tab === "Snacks" && <CategoryGroups groups={SNACKS} onAdd={onAdd} inCart={inCart} />}
