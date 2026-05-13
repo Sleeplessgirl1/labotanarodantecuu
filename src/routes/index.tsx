@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowUpRight, UtensilsCrossed, Package, Image as ImageIcon, FileText, Phone } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -8,80 +8,72 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <div className="relative">
-      {/* Hero block — solid orange */}
-      <div className="bg-primary text-primary-foreground px-6 pt-12 pb-20 rounded-b-[40px] relative overflow-hidden">
-        <div className="absolute -top-10 -right-10 h-44 w-44 rounded-full bg-white/10" />
-        <div className="absolute top-20 -left-12 h-32 w-32 rounded-full bg-white/10" />
-        <div className="absolute bottom-4 right-6 text-5xl animate-float">🍹</div>
-        <div className="absolute top-10 right-10 text-3xl animate-float" style={{ animationDelay: "0.5s" }}>🌶️</div>
-
-        <div className="relative">
-          <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold">
-            <Sparkles className="h-3.5 w-3.5" />
-            Snack bar para eventos
-          </div>
-
-          <h1 className="mt-5 text-[3.2rem] leading-[0.95] font-black tracking-tight">
-            La Botana<br/>Rodante
-          </h1>
-
-          <p className="mt-5 text-base text-white/90 max-w-[260px] leading-relaxed">
-            Snacks, botanas y bebidas que mueven tu fiesta 🎉
-          </p>
+    <div className="px-6 pt-8 pb-6">
+      {/* Brand row */}
+      <div className="flex items-center gap-3 animate-fade-up">
+        <div className="h-12 w-12 rounded-2xl bg-foreground text-white flex items-center justify-center font-black text-lg tracking-tighter">
+          LB
+        </div>
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-bold">Snack Bar</p>
+          <h1 className="text-xl font-extrabold leading-tight tracking-tight">La Botana Rodante</h1>
         </div>
       </div>
 
-      {/* CTAs floating over hero */}
-      <div className="px-5 -mt-12 relative z-10 flex flex-col gap-3">
-        <Link
-          to="/menu"
-          className="group bg-white border-2 border-primary text-primary font-extrabold py-5 rounded-3xl text-lg active:scale-[0.98] transition shadow-soft flex items-center justify-between px-6"
-        >
-          <span className="flex items-center gap-3">
-            <span className="text-2xl">🌮</span> Ver Menú
-          </span>
-          <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition" />
-        </Link>
-        <Link
-          to="/paquetes"
-          className="group bg-foreground text-white font-extrabold py-5 rounded-3xl text-lg active:scale-[0.98] transition shadow-soft flex items-center justify-between px-6"
-        >
-          <span className="flex items-center gap-3">
-            <span className="text-2xl">🎁</span> Ver Paquetes
-          </span>
-          <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition" />
-        </Link>
+      {/* Hero CTA card */}
+      <Link
+        to="/menu"
+        className="block mt-6 relative overflow-hidden bg-primary text-primary-foreground rounded-[28px] p-7 active:scale-[0.99] transition animate-fade-up delay-1"
+      >
+        <div className="absolute -right-10 -bottom-10 h-48 w-48 rounded-full bg-white/10 animate-orbit" />
+        <div className="absolute -right-20 top-6 h-32 w-32 rounded-full bg-white/10 animate-orbit" style={{ animationDelay: "1.5s" }} />
+
+        <p className="relative text-[11px] uppercase tracking-[0.2em] font-bold opacity-90">Cotiza tu evento</p>
+        <h2 className="relative mt-3 text-[1.65rem] leading-[1.05] font-extrabold tracking-tight max-w-[260px]">
+          Arma tu pedido y mándalo por WhatsApp
+        </h2>
+        <span className="relative mt-6 inline-flex items-center gap-2 bg-white text-foreground font-bold pl-5 pr-4 py-3 rounded-full text-sm">
+          Empezar pedido
+          <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
+        </span>
+      </Link>
+
+      {/* Section list */}
+      <div className="mt-5 space-y-2.5">
+        <NavCard to="/menu" icon={UtensilsCrossed} title="Menú" subtitle="Snacks, bebidas y más" delay="delay-2" />
+        <NavCard to="/paquetes" icon={Package} title="Paquetes" subtitle="Para tu evento" delay="delay-3" />
+        <NavCard to="/galeria" icon={ImageIcon} title="Galería" subtitle="Conócenos en fotos" delay="delay-4" />
+        <NavCard to="/politicas" icon={FileText} title="Políticas" subtitle="Pagos, refill, logística" delay="delay-5" muted />
+        <NavCard to="/contacto" icon={Phone} title="Contacto" subtitle="WhatsApp · Instagram" delay="delay-5" muted />
       </div>
 
-      {/* Quick categories */}
-      <div className="px-5 mt-8">
-        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Lo más pedido</p>
-        <div className="grid grid-cols-2 gap-3">
-          <QuickCard emoji="🍹" title="Cantaritos" sub="40 piezas" />
-          <QuickCard emoji="🍅" title="Clamatos" sub="Desde $70" />
-          <QuickCard emoji="🍔" title="Burgers" sub="Mini hamburguesas" />
-          <QuickCard emoji="🍭" title="Snack Bar" sub="2 porciones/pax" />
-        </div>
-      </div>
-
-      <div className="px-5 mt-8">
-        <Link to="/contacto" className="block bg-accent border border-primary/20 rounded-3xl p-5 text-center">
-          <p className="text-2xl">📲</p>
-          <p className="mt-1 font-bold">¿Listo para tu evento?</p>
-          <p className="text-sm text-muted-foreground">Escríbenos por WhatsApp · 614 515 42 40</p>
-        </Link>
-      </div>
+      <p className="mt-8 text-center text-[11px] text-muted-foreground tracking-wide">
+        Chihuahua, Chih. · +52 614 515 42 40
+      </p>
     </div>
   );
 }
 
-function QuickCard({ emoji, title, sub }: { emoji: string; title: string; sub: string }) {
+function NavCard({
+  to, icon: Icon, title, subtitle, delay, muted,
+}: {
+  to: string; icon: typeof UtensilsCrossed; title: string; subtitle: string; delay?: string; muted?: boolean;
+}) {
   return (
-    <div className="bg-white rounded-3xl p-4 shadow-soft border border-border">
-      <div className="text-3xl">{emoji}</div>
-      <p className="mt-2 font-bold text-sm">{title}</p>
-      <p className="text-xs text-muted-foreground">{sub}</p>
-    </div>
+    <Link
+      to={to}
+      className={`group flex items-center gap-4 rounded-[22px] px-5 py-4 transition active:scale-[0.99] animate-fade-up ${delay} ${
+        muted ? "bg-muted hover:bg-accent" : "bg-accent hover:bg-primary/10"
+      }`}
+    >
+      <div className="h-11 w-11 rounded-2xl bg-background border border-border flex items-center justify-center shrink-0 transition group-hover:border-primary group-hover:text-primary">
+        <Icon className="h-5 w-5" strokeWidth={1.75} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-extrabold text-[15px] leading-tight">{title}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+      </div>
+      <ArrowUpRight className="h-5 w-5 text-muted-foreground transition group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+    </Link>
   );
 }

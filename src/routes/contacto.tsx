@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
-import { MessageCircle, Instagram, MapPin, Clock } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/contacto")({
   component: ContactoPage,
@@ -10,52 +10,49 @@ export const Route = createFileRoute("/contacto")({
 function ContactoPage() {
   return (
     <div>
-      <Header title="Contacto" emoji="📞" subtitle="Estamos listos para tu próximo evento" />
-      <div className="px-5 space-y-3 pb-4">
+      <Header kicker="Hablemos" title="Contacto" />
+
+      <div className="px-6 pb-6 space-y-3">
         <a
           href="https://wa.me/526145154240"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground font-bold py-4 rounded-full text-base active:scale-[0.98] transition shadow-soft"
+          className="group flex items-center justify-between gap-3 bg-primary text-primary-foreground rounded-[22px] px-6 py-5 active:scale-[0.99] transition animate-fade-up"
         >
-          <MessageCircle className="h-5 w-5" />
-          Escribir por WhatsApp
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.18em] font-bold opacity-80">WhatsApp</p>
+            <p className="text-lg font-extrabold mt-1">+52 614 515 42 40</p>
+          </div>
+          <ArrowUpRight className="h-6 w-6 transition group-hover:-translate-y-1 group-hover:translate-x-1" />
         </a>
+
         <a
           href="https://instagram.com/labotanaradante"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full bg-white border-2 border-primary text-primary font-bold py-4 rounded-full text-base active:scale-[0.98] transition"
+          className="group flex items-center justify-between gap-3 bg-accent rounded-[22px] px-6 py-5 active:scale-[0.99] transition animate-fade-up delay-1 hover:bg-foreground hover:text-white"
         >
-          <Instagram className="h-5 w-5" />
-          Seguirnos en Instagram
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.18em] font-bold opacity-70">Instagram</p>
+            <p className="text-lg font-extrabold mt-1">@labotanaradante</p>
+          </div>
+          <ArrowUpRight className="h-6 w-6 transition group-hover:-translate-y-1 group-hover:translate-x-1" />
         </a>
 
-        <div className="mt-8 space-y-3">
-          <InfoRow icon={MapPin} label="Ubicación" value="Chihuahua, Chih." />
-          <InfoRow icon={Clock} label="Horario" value="Lunes a Domingo · Eventos con cita previa" />
-          <InfoRow icon={MessageCircle} label="Teléfono" value="+52 614 515 42 40" />
-          <InfoRow icon={Instagram} label="Instagram" value="@labotanaradante" />
+        <div className="pt-6 mt-2 border-t border-border space-y-5 animate-fade-up delay-2">
+          <Detail label="Ubicación" value="Chihuahua, Chih." />
+          <Detail label="Horario" value="Lunes a Domingo · Eventos con cita previa" />
         </div>
-
-        <p className="text-center text-xs text-muted-foreground font-light pt-8">
-          La Botana Rodante · Snack bar para eventos
-        </p>
       </div>
     </div>
   );
 }
 
-function InfoRow({ icon: Icon, label, value }: { icon: typeof MapPin; label: string; value: string }) {
+function Detail({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 shadow-soft flex items-center gap-3">
-      <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-        <Icon className="h-5 w-5" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">{label}</p>
-        <p className="text-sm font-medium truncate">{value}</p>
-      </div>
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-muted-foreground">{label}</p>
+      <p className="text-[15px] font-semibold mt-1">{value}</p>
     </div>
   );
 }
