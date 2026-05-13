@@ -70,13 +70,28 @@
 
 @layer base {
   * { border-color: var(--color-border); }
+  html { font-size: 17px; }
   html, body {
-    background-color: #f7f7f5;
+    background-color: #fff5ec;
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-weight: 300;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.02em; }
-  label { font-weight: 500; }
+  h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.025em; }
+  label { font-weight: 600; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
 }
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(-4deg); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+.animate-float { animation: float-slow 3.5s ease-in-out infinite; }
+.animate-wiggle { animation: wiggle 0.4s ease-in-out; }
