@@ -47,7 +47,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <li>Montaje: 90 minutos antes del inicio del evento.</li>
         <li>Servicio en Chihuahua ciudad sin cargo extra. Eventos foráneos con cotización especial.</li>
         <li>Alergias: informar al contratar.</li>
-        <li>Alimentos no consumidos no se entregan al finalizar el evento.</li>
+        <li>Alimentos no consumidos se pueden entregar al finalizar el evento.</li>
       </ul>
     ),
   },
