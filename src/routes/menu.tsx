@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Check } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { Header } from "@/components/Header";
 
@@ -39,8 +39,8 @@ const TOPPING_LIMIT = 10;
 function MenuPage() {
   const [tab, setTab] = useState<Tab>("Snacks");
   const [limitFlash, setLimitFlash] = useState(false);
-  const { add, items } = useCart();
-  const inCart = (id: string) => items.some((i) => i.id === id);
+  const { add, items, setQty } = useCart();
+  const qtyOf = (id: string) => items.find((i) => i.id === id)?.quantity ?? 0;
 
   const toppingCount = items
     .filter((i) => TOPPING_CATS.includes(i.category))
@@ -50,12 +50,17 @@ function MenuPage() {
 
   const onAdd = (name: string, category: string) => {
     const id = `${category}:${name}`;
-    if (TOPPING_CATS.includes(category) && !inCart(id) && toppingCount >= TOPPING_LIMIT) {
+    if (TOPPING_CATS.includes(category) && toppingCount >= TOPPING_LIMIT) {
       setLimitFlash(true);
       setTimeout(() => setLimitFlash(false), 1800);
       return;
     }
     add({ id, name, category });
+  };
+  const onRemove = (name: string, category: string) => {
+    const id = `${category}:${name}`;
+    const q = qtyOf(id);
+    if (q > 0) setQty(id, q - 1);
   };
 
   return (
@@ -107,14 +112,14 @@ function MenuPage() {
       )}
 
       <div key={tab} className="px-6 py-6 animate-fade-up">
-        {tab === "Snacks" && <CategoryGroups groups={SNACKS} onAdd={onAdd} inCart={inCart} />}
+        {tab === "Snacks" && <CategoryGroups groups={SNACKS} onAdd={onAdd} onRemove={onRemove} qtyOf={qtyOf} atLimit={toppingCount >= TOPPING_LIMIT} />}
         {tab === "Frutas" && (
           <>
             <p className="text-xs text-muted-foreground mb-4 italic">Frutas frescas sujetas a temporada</p>
-            <CategoryGroups groups={FRUTAS} onAdd={onAdd} inCart={inCart} />
+            <CategoryGroups groups={FRUTAS} onAdd={onAdd} onRemove={onRemove} qtyOf={qtyOf} atLimit={toppingCount >= TOPPING_LIMIT} />
           </>
         )}
-        {tab === "Dulces" && <CategoryGroups groups={DULCES} onAdd={onAdd} inCart={inCart} />}
+        {tab === "Dulces" && <CategoryGroups groups={DULCES} onAdd={onAdd} onRemove={onRemove} qtyOf={qtyOf} atLimit={toppingCount >= TOPPING_LIMIT} />}
         {tab === "Mini Burgers" && (
           <DrinkBlock
             tab={tab}
@@ -172,36 +177,58 @@ function MenuPage() {
 }
 
 function CategoryGroups({
-  groups, onAdd, inCart,
+  groups, onAdd, onRemove, qtyOf, atLimit,
 }: {
   groups: Record<string, string[]>;
   onAdd: (n: string, c: string) => void;
-  inCart: (id: string) => boolean;
+  onRemove: (n: string, c: string) => void;
+  qtyOf: (id: string) => number;
+  atLimit: boolean;
 }) {
   const entries = Object.entries(groups);
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
       {entries.map(([cat, items], idx) => (
         <section key={cat} className="animate-fade-up" style={{ animationDelay: `${idx * 60}ms` }}>
           <h2 className="text-xs uppercase tracking-[0.18em] font-bold text-muted-foreground mb-3">{cat}</h2>
           <ul className="divide-y divide-border">
             {items.map((item) => {
               const id = `${cat}:${item}`;
-              const added = inCart(id);
+              const qty = qtyOf(id);
+              const added = qty > 0;
+              const plusDisabled = atLimit;
               return (
-                <li key={item} className="flex items-center justify-between py-3.5">
-                  <span className="text-[15px] font-medium">{item}</span>
-                  <button
-                    onClick={() => onAdd(item, cat)}
-                    aria-label={`Agregar ${item}`}
-                    className={`h-9 w-9 rounded-full flex items-center justify-center transition active:scale-90 ${
-                      added
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-accent text-foreground hover:bg-primary hover:text-primary-foreground"
-                    }`}
-                  >
-                    {added ? <Check className="h-4 w-4" strokeWidth={3} /> : <Plus className="h-4 w-4" strokeWidth={2.5} />}
-                  </button>
+                <li key={item} className="flex items-center justify-between gap-3 py-3.5">
+                  <span className="text-[15px] font-medium flex-1 min-w-0">{item}</span>
+                  {added ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => onRemove(item, cat)}
+                        aria-label={`Quitar ${item}`}
+                        className="h-9 w-9 rounded-full flex items-center justify-center bg-accent text-foreground hover:bg-foreground hover:text-background transition active:scale-90"
+                      >
+                        <Minus className="h-4 w-4" strokeWidth={2.5} />
+                      </button>
+                      <span className="text-sm font-extrabold tabular-nums w-5 text-center">{qty}</span>
+                      <button
+                        onClick={() => onAdd(item, cat)}
+                        disabled={plusDisabled}
+                        aria-label={`Agregar ${item}`}
+                        className="h-9 w-9 rounded-full flex items-center justify-center bg-primary text-primary-foreground transition active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        <Plus className="h-4 w-4" strokeWidth={2.5} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => onAdd(item, cat)}
+                      disabled={plusDisabled}
+                      aria-label={`Agregar ${item}`}
+                      className="h-9 w-9 rounded-full flex items-center justify-center bg-accent text-foreground hover:bg-primary hover:text-primary-foreground transition active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <Plus className="h-4 w-4" strokeWidth={2.5} />
+                    </button>
+                  )}
                 </li>
               );
             })}
