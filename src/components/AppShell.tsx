@@ -11,6 +11,13 @@ const navItems = [
   { to: "/carrito", label: "Carrito", icon: ShoppingBag },
 ] as const;
 
+const desktopNav = [
+  { to: "/", label: "Inicio" },
+  { to: "/menu", label: "Menú" },
+  { to: "/paquetes", label: "Paquetes" },
+  { to: "/galeria", label: "Galería" },
+] as const;
+
 const desktopExtra = [
   { to: "/politicas", label: "Políticas", icon: FileText },
   { to: "/contacto", label: "Contacto", icon: Phone },
@@ -31,9 +38,8 @@ export function AppShell() {
             <span className="font-display text-xl tracking-wide">LA BOTANA RODANTE</span>
           </Link>
           <nav className="flex items-center gap-1">
-            {[...navItems, ...desktopExtra].map(({ to, label }) => {
+            {[...desktopNav, ...desktopExtra].map(({ to, label }) => {
               const active = loc.pathname === to;
-              const isCart = to === "/carrito";
               return (
                 <Link
                   key={to}
@@ -43,14 +49,25 @@ export function AppShell() {
                   }`}
                 >
                   {label}
-                  {isCart && count > 0 && (
-                    <span className="ml-2 inline-flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-black min-w-[18px] h-[18px] px-1 rounded-full ring-2 ring-background">
-                      {count}
-                    </span>
-                  )}
                 </Link>
               );
             })}
+            <Link
+              to="/carrito"
+              aria-label="Carrito"
+              className={`relative ml-2 h-10 w-10 rounded-full flex items-center justify-center transition-colors ${
+                loc.pathname === "/carrito"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-accent text-foreground hover:bg-primary hover:text-primary-foreground"
+              }`}
+            >
+              <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={2.2} />
+              {count > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-black min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center ring-2 ring-background">
+                  {count}
+                </span>
+              )}
+            </Link>
           </nav>
         </div>
       </header>

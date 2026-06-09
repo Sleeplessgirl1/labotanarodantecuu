@@ -18,6 +18,8 @@ const BEB: P[] = [
   { id: "beb-cant", name: "Solo Cantaritos", desc: "40 piezas · 1 hr de servicio", price: "$3,500" },
   { id: "beb-clam", name: "Solo Clamatos", desc: "40 piezas", price: "$2,800" },
   { id: "beb-marg", name: "Solo Margaritas", desc: "40 piezas", price: "$3,500" },
+  { id: "beb-mezc", name: "Solo Mezcalitas", desc: "40 piezas", price: "$3,500" },
+  { id: "beb-pers", name: "Cócteles Personalizados", desc: "Martinis, Cosmopolitan o Daiquiris", price: "A cotizar" },
   { id: "beb-combo2", name: "Combo Cantaritos + Clamatos", desc: "40 + 40 piezas", price: "$5,700", saving: "Ahorras $600" },
   { id: "beb-combo3", name: "Combo Triple", desc: "40 cantaritos + 40 clamatos + 40 margaritas", price: "$8,800", saving: "Ahorras $1,000" },
 ];
