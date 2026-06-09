@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Leaf } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { Header } from "@/components/Header";
 
@@ -9,8 +9,14 @@ export const Route = createFileRoute("/menu")({
   head: () => ({ meta: [{ title: "Menú — La Botana Rodante" }] }),
 });
 
-const TABS = ["Snacks", "Frutas", "Dulces", "Mini Burgers", "Cantaritos", "Clamatos", "Margaritas"] as const;
+const TABS = ["Snacks", "Frutas", "Dulces", "Mini Burgers", "Cantaritos", "Clamatos", "Margaritas", "Mezcalitas", "Personalizados"] as const;
 type Tab = typeof TABS[number];
+
+const TAB_GROUPS: { label: string | null; tabs: Tab[] }[] = [
+  { label: "Snack Bar", tabs: ["Snacks", "Frutas", "Dulces"] },
+  { label: null, tabs: ["Mini Burgers"] },
+  { label: "Drinks", tabs: ["Cantaritos", "Clamatos", "Margaritas", "Mezcalitas", "Personalizados"] },
+];
 
 const MINI_BURGERS = [
   { name: "Paquete A — 30 personas", desc: "75 mini hamburguesas + papas francesas", price: "$2,850" },
@@ -25,16 +31,20 @@ const SNACKS: Record<string, string[]> = {
 const FRUTAS: Record<string, string[]> = {
   "Frutas Frescas": ["Sandía", "Melón", "Piña", "Fresas", "Mango"],
   "Verduras": ["Pepino", "Jícama", "Zanahoria"],
-  "Gomitas y dulces blandos": ["Pingüinos", "Cerezas", "Dientes", "Panditas", "Lombriz", "Lombriz Neón", "Frutitas Azúcar", "Fruta Enchilada", "Aros Durazno", "Aros Manzana", "Manguitos", "Manguitos Enchilados", "Chocolates", "Tiburones"],
 };
 const DULCES: Record<string, string[]> = {
+  "Gomitas y dulces blandos": ["Pingüinos", "Cerezas", "Dientes", "Panditas", "Lombriz", "Lombriz Neón", "Frutitas Azúcar", "Fruta Enchilada", "Aros Durazno", "Aros Manzana", "Manguitos", "Manguitos Enchilados", "Chocolates", "Tiburones"],
   "Tamarindo": ["Tamarindo Enchilado", "Tamarindo Azúcar", "Pulparindots", "Pulparindo", "Rellerindos"],
   "Paletas": ["Paleta Elote", "Paleta Cerveza", "Paleta Mango"],
   "Otros": ["Picafresa", "Tamborcito", "Banderilla Enchilada", "Banderilla Azúcar"],
 };
 
+const HEALTHY_CATS = ["Frutas Frescas", "Verduras"];
+
 const TOPPING_CATS = ["Papas","Cacahuates","Botanas","Frutas Frescas","Verduras","Gomitas y dulces blandos","Tamarindo","Paletas","Otros"];
 const TOPPING_LIMIT = 10;
+
+const DRINK_TABS: Tab[] = ["Cantaritos", "Clamatos", "Margaritas", "Mezcalitas", "Personalizados"];
 
 function MenuPage() {
   const [tab, setTab] = useState<Tab>("Snacks");
@@ -70,22 +80,41 @@ function MenuPage() {
       {/* Tabs */}
       <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
         <div className="overflow-x-auto no-scrollbar">
-          <div className="flex gap-6 px-6 py-3 min-w-max">
-            {TABS.map((t) => {
-              const active = t === tab;
-              return (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  data-active={active}
-                  className={`underline-grow text-sm font-bold whitespace-nowrap min-h-[36px] transition-colors ${
-                    active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t}
-                </button>
-              );
-            })}
+          <div className="flex items-end gap-7 px-6 pt-2 pb-3 min-w-max">
+            {TAB_GROUPS.map((group, gi) => (
+              <div key={gi} className="flex flex-col gap-1.5">
+                {group.label ? (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70 px-0.5">
+                      {group.label}
+                    </span>
+                    <div className="h-px bg-border" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-transparent select-none px-0.5">·</span>
+                    <div className="h-px bg-transparent" />
+                  </div>
+                )}
+                <div className="flex gap-5">
+                  {group.tabs.map((t) => {
+                    const active = t === tab;
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => setTab(t)}
+                        data-active={active}
+                        className={`underline-grow text-sm font-bold whitespace-nowrap min-h-[36px] transition-colors ${
+                          active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         <div className="h-px bg-border" />
@@ -131,15 +160,15 @@ function MenuPage() {
         {tab === "Cantaritos" && (
           <DrinkBlock
             tab={tab}
-            description="Servido en cantarito de barro 355ml"
-            ingredients="Tequila 1 oz · Squirt top · Jugo de limón 3/4 oz · Sal · Agua mineral · Escarcha de chamoy y miguelito en borde"
+            description="Servido en cantarito de barro"
+            ingredients="Tequila · Squirt · Jugo de limón · Sal · Agua mineral · Escarcha de chamoy y miguelito en borde"
             options={[{ name: "Paquete 40 piezas — 1 hr de servicio", price: "$3,500" }]}
           />
         )}
         {tab === "Clamatos" && (
           <DrinkBlock
             tab={tab}
-            ingredients="Clamato 150ml · Cerveza Modelo o Carta Blanca · Jugo de limón 1 oz · Apio · Cacahuates · Salsas · Limón · Chile (Carne seca: extra a cotizar)"
+            ingredients="Clamato · Cerveza Modelo o Carta Blanca · Jugo de limón · Apio · Cacahuates · Salsas · Limón · Chile (Carne seca: extra a cotizar)"
             options={[
               { name: "Medio litro", price: "$70" },
               { name: "Litro", price: "$130" },
@@ -151,12 +180,32 @@ function MenuPage() {
           <DrinkBlock
             tab={tab}
             description="Sabores: Tamarindo o Limón"
-            ingredients="Tequila 1 oz · Jugo de limón 1 oz · Jarabe natural o tamarindo · Mineral o Squirt · Sal · Escarcha de chamoy y miguelito en borde · Vaso 9oz"
+            ingredients="Tequila · Jugo de limón · Jarabe natural o tamarindo · Mineral o Squirt · Sal · Escarcha de chamoy y miguelito en borde"
             options={[{ name: "Paquete 40 piezas", price: "$3,500" }]}
           />
         )}
+        {tab === "Mezcalitas" && (
+          <DrinkBlock
+            tab={tab}
+            description="Sabores: Tamarindo, Mango o Maracuyá"
+            ingredients="Mezcal · Jugo de limón · Jarabe natural · Escarcha de sal con chile · Limón"
+            options={[{ name: "Paquete 40 piezas", price: "$3,500" }]}
+          />
+        )}
+        {tab === "Personalizados" && (
+          <DrinkBlock
+            tab={tab}
+            description="Cócteles personalizados para tu evento"
+            ingredients="Martinis · Cosmopolitan · Daiquiris"
+            options={[
+              { name: "Martinis — paquete personalizado", price: "A cotizar" },
+              { name: "Cosmopolitan — paquete personalizado", price: "A cotizar" },
+              { name: "Daiquiris — paquete personalizado", price: "A cotizar" },
+            ]}
+          />
+        )}
 
-        {(tab === "Cantaritos" || tab === "Clamatos" || tab === "Margaritas") && (
+        {DRINK_TABS.includes(tab) && (
           <p className="mt-8 text-xs text-muted-foreground text-center border-t border-border pt-5">
             Solo mayores de 18 años · Versión sin alcohol disponible bajo solicitud
           </p>
@@ -188,53 +237,67 @@ function CategoryGroups({
   const entries = Object.entries(groups);
   return (
     <div className="space-y-8 md:grid md:grid-cols-2 md:gap-8 md:space-y-0">
-      {entries.map(([cat, items], idx) => (
-        <section key={cat} className="animate-fade-up" style={{ animationDelay: `${idx * 60}ms` }}>
-          <h2 className="text-xs uppercase tracking-[0.18em] font-bold text-muted-foreground mb-3">{cat}</h2>
-          <ul className="divide-y divide-border">
-            {items.map((item) => {
-              const id = `${cat}:${item}`;
-              const qty = qtyOf(id);
-              const added = qty > 0;
-              const plusDisabled = atLimit;
-              return (
-                <li key={item} className="flex items-center justify-between gap-3 py-3.5">
-                  <span className="text-[15px] font-medium flex-1 min-w-0">{item}</span>
-                  {added ? (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => onRemove(item, cat)}
-                        aria-label={`Quitar ${item}`}
-                        className="h-9 w-9 rounded-full flex items-center justify-center bg-accent text-foreground hover:bg-foreground hover:text-background transition active:scale-90"
-                      >
-                        <Minus className="h-4 w-4" strokeWidth={2.5} />
-                      </button>
-                      <span className="text-sm font-extrabold tabular-nums w-5 text-center">{qty}</span>
+      {entries.map(([cat, items], idx) => {
+        const healthy = HEALTHY_CATS.includes(cat);
+        return (
+          <section key={cat} className="animate-fade-up" style={{ animationDelay: `${idx * 60}ms` }}>
+            <h2 className="text-xs uppercase tracking-[0.18em] font-bold text-muted-foreground mb-3 flex items-center gap-1.5">
+              {cat}
+              {healthy && (
+                <span className="inline-flex items-center gap-1 normal-case tracking-normal text-[10px] font-bold text-green-700 bg-green-100 rounded-full px-2 py-0.5">
+                  <Leaf className="h-3 w-3" strokeWidth={2.5} />
+                  Healthy
+                </span>
+              )}
+            </h2>
+            <ul className="divide-y divide-border">
+              {items.map((item) => {
+                const id = `${cat}:${item}`;
+                const qty = qtyOf(id);
+                const added = qty > 0;
+                const plusDisabled = atLimit;
+                return (
+                  <li key={item} className="flex items-center justify-between gap-3 py-3.5">
+                    <span className="text-[15px] font-medium flex-1 min-w-0 flex items-center gap-1.5">
+                      {item}
+                      {healthy && <Leaf className="h-3.5 w-3.5 text-green-600 shrink-0" strokeWidth={2.2} />}
+                    </span>
+                    {added ? (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => onRemove(item, cat)}
+                          aria-label={`Quitar ${item}`}
+                          className="h-9 w-9 rounded-full flex items-center justify-center bg-accent text-foreground hover:bg-foreground hover:text-background transition active:scale-90"
+                        >
+                          <Minus className="h-4 w-4" strokeWidth={2.5} />
+                        </button>
+                        <span className="text-sm font-extrabold tabular-nums w-5 text-center">{qty}</span>
+                        <button
+                          onClick={() => onAdd(item, cat)}
+                          disabled={plusDisabled}
+                          aria-label={`Agregar ${item}`}
+                          className="h-9 w-9 rounded-full flex items-center justify-center bg-primary text-primary-foreground transition active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <Plus className="h-4 w-4" strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    ) : (
                       <button
                         onClick={() => onAdd(item, cat)}
                         disabled={plusDisabled}
                         aria-label={`Agregar ${item}`}
-                        className="h-9 w-9 rounded-full flex items-center justify-center bg-primary text-primary-foreground transition active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="h-9 w-9 rounded-full flex items-center justify-center bg-accent text-foreground hover:bg-primary hover:text-primary-foreground transition active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <Plus className="h-4 w-4" strokeWidth={2.5} />
                       </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => onAdd(item, cat)}
-                      disabled={plusDisabled}
-                      aria-label={`Agregar ${item}`}
-                      className="h-9 w-9 rounded-full flex items-center justify-center bg-accent text-foreground hover:bg-primary hover:text-primary-foreground transition active:scale-90 disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                      <Plus className="h-4 w-4" strokeWidth={2.5} />
-                    </button>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
     </div>
   );
 }
